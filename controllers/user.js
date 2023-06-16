@@ -27,22 +27,22 @@ class AuthController {
     }
   };
 
-  profile = async (req, res) => {
-    const id = req.id;
-    const email = req.email;
+  // profile = async (req, res) => {
+  //   const id = req.id;
+  //   const email = req.email;
 
-    try {
-      const user = await this.userService.findEmail(email);
-      if (!user) {
-        return res.status(401).json({ message: 'Usuario no encontrado' });
-      }
+  //   try {
+  //     const user = await this.userService.findEmail(email);
+  //     if (!user) {
+  //       return res.status(401).json({ message: 'Usuario no encontrado' });
+  //     }
 
-      return res.json({ id: id, email: email, fullname: user.fullname, phone: user.phone });
-    } catch (error) {
-      console.log(error);
-      return res.status(401).json({ message: error.message });
-    }
-  };
+  //     return res.json({ id: id, email: email, fullname: user.fullname, phone: user.phone });
+  //   } catch (error) {
+  //     console.log(error);
+  //     return res.status(401).json({ message: error.message });
+  //   }
+  // };
 
   updateProfile = async (req, res) => {
     const id = req.id;
@@ -56,6 +56,21 @@ class AuthController {
       }
       const user = await this.userService.findEmail(email);
       return res.json({ message: 'User update', id: id, fullname: user.fullname, phone: user.phone });
+    } catch (error) {
+      console.log(error);
+      return res.status(401).json({ message: error.message });
+    }
+  };
+
+  getProfile = async (req, res) => {
+    const idClient = req.params.idClient;
+
+    try {
+      const user = await this.userService.getProfile(idClient);
+      if (!user) {
+        return res.status(401).json({ message: 'Usuario no encontrado' });
+      }
+      return res.json(user);
     } catch (error) {
       console.log(error);
       return res.status(401).json({ message: error.message });

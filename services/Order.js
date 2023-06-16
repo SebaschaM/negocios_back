@@ -4,17 +4,26 @@ class OrderService {
   constructor() {}
 
   async createOrder(order, productId) {
-    const { subtotal, total, purchase_date, state_id, user_id, quantity } = order;
+    const { subtotal, address, total, quantity, purchase_date, description, client_id } = order;
 
     try {
       const query =
-        'INSERT INTO customer_order (subtotal, total, purchase_date, state_id, user_id, quantity) VALUES (?, ? ,? ,? ,? ,?)';
-      const [order] = await client.query(query, [subtotal, total, purchase_date, state_id, user_id, quantity]);
+        'INSERT INTO "order" (subtotal, address, total, quantity, purchase_date, description, client_id) VALUES ($1, $2 ,$3 ,$4 ,$5 ,$6, $7) RETURNING "idOrder"';
+      const orderResult = await client.query(query, [
+        subtotal,
+        address,
+        total,
+        quantity,
+        purchase_date,
+        description,
+        client_id,
+      ]);
 
-      const orderId = order.insertId;
-      const query2 = 'INSERT INTO customer_order_product (customer_order_id, product_id) VALUES (?, ?)';
-      await client.query(query2, [orderId, productId]);
-      return 'Orden creada con éxito';
+      const idOrder = orderResult.rows[0].idOrder;
+      console.log(idOrder);
+      const query2 = 'INSERT INTO order_product (order_id, product_id) VALUES ($1, $2)';
+      await client.query(query2, [idOrder, productId]);
+      return { message: 'Orden creada con éxito' };
     } catch (error) {
       console.error('Error al ingresar su orden: ', error);
       throw error;
@@ -24,11 +33,23 @@ class OrderService {
   async findAllOrdersByUser(idUser) {
     try {
       const query =
-        'SELECT co.*, p.* FROM customer_order co INNER JOIN customer_order_product cop ON co.id = cop.customer_order_id INNER JOIN product p ON cop.product_id = p.id WHERE co.user_id = ?';
-      const [myOrders] = await client.query(query, [idUser]);
-      return myOrders;
+        'SELECT o.*, pr.* FROM order_product AS op INNER JOIN "order" AS o ON o."idOrder" = op.order_id INNER JOIN product AS pr ON  pr."idProduct" = op.product_id WHERE o.client_id = $1';
+      const myOrders = await client.query(query, [idUser]);
+      return myOrders.rows;
     } catch (error) {
       console.error('Error al obtener los pedidos: ', error);
+      throw error;
+    }
+  }
+
+  async getOrderById(idOrder) {
+    try {
+      const query =
+        'SELECT o.*, pr.* FROM order_product AS op INNER JOIN "order" AS o ON o."idOrder" = op.order_id INNER JOIN product AS pr ON  pr."idProduct" = op.product_id WHERE o."idOrder" = $1';
+      const order = await client.query(query, [idOrder]);
+      return order.rows;
+    } catch (error) {
+      console.error('Error al obtener el pedido: ', error);
       throw error;
     }
   }

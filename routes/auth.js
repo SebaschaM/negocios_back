@@ -6,7 +6,7 @@ const authController = new AuthController();
 
 routerAuth.post('/login', [], authController.login);
 routerAuth.post('/register', [], authController.register);
-routerAuth.get('/profile', [], authController.profile);
+routerAuth.get('/profile/:idClient', [], authController.getProfile);
 routerAuth.post('/updateprofile', [], authController.updateProfile);
 
 export default routerAuth;

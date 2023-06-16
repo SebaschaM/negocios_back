@@ -57,10 +57,9 @@ class UserService {
       }
       const hashedPassword = await bcrypt.hash(password, 10);
       const query = 'INSERT INTO client (fullname, email, password, phone) VALUES ($1, $2, $3, $4)';
-      const result = await client.query(query, [fullname, email, hashedPassword, phone]);
+      await client.query(query, [fullname, email, hashedPassword, phone]);
 
       const newUser = {
-        id: result.insertId,
         fullname: fullname,
         email: email,
         password: hashedPassword,
@@ -68,6 +67,16 @@ class UserService {
       };
 
       return newUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getProfile(idClient) {
+    try {
+      const query = 'SELECT * FROM client WHERE "idClient" = $1';
+      const result = await client.query(query, [idClient]);
+      return result.rows[0];
     } catch (error) {
       throw error;
     }

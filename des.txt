@@ -1,2 +1,12 @@
-Producto listo
-Authenticacion listo
+= Authenticacion (Login, Registro) listo
+
+= Producto (Listar productos, obtener producto por id, listar categorias, listar producto por categoria) Listo
+
+=== FALTA ===
+= Pedido
+Insertar orden (Insertar order luego order_product) Listo
+Listar ordenes Listo
+Obtener orden por id Listo
+
+- Perfil, obtener datos del perfil Listo
+
