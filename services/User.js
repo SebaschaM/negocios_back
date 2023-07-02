@@ -37,11 +37,13 @@ class UserService {
   async updateProfile(id, body) {
     try {
       const { password } = body;
+      console.log(body);
       if (password) {
         body.password = await bcrypt.hash(password, 10);
       }
-      const query = 'UPDATE user SET ? WHERE id = ?';
-      const result = await client.query(query, [body, id]);
+      const query = 'UPDATE client SET fullname=$1, email=$2, password=$3, phone=$4 WHERE "idClient"=$5';
+      const values = [body.fullname, body.email, body.password, body.phone, id];
+      const result = await client.query(query, values);
       return result;
     } catch (error) {
       throw error;

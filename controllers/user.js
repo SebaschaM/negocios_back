@@ -45,7 +45,7 @@ class AuthController {
   // };
 
   updateProfile = async (req, res) => {
-    const id = req.id;
+    const id = req.params.idClient;
     const body = req.body;
     const email = req.email;
 
@@ -54,8 +54,8 @@ class AuthController {
       if (!updatedUser) {
         return res.status(401).json({ message: 'Usuario no encontrado' });
       }
-      const user = await this.userService.findEmail(email);
-      return res.json({ message: 'User update', id: id, fullname: user.fullname, phone: user.phone });
+      await this.userService.findEmail(email);
+      return res.json({ message: 'User update' });
     } catch (error) {
       console.log(error);
       return res.status(401).json({ message: error.message });
