@@ -17,10 +17,10 @@ class AuthController {
   };
 
   register = async (req, res) => {
-    const { fullname, email, password, phone } = req.body;
+    const { fullname, dni, email, password, phone } = req.body;
 
     try {
-      const newUser = await this.userService.register(fullname, email, password, phone);
+      const newUser = await this.userService.register(fullname, dni, email, password, phone);
       return res.json(newUser);
     } catch (error) {
       return res.status(500).json({ message: error.message });
