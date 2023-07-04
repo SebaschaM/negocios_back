@@ -8,7 +8,7 @@ class OrderService {
 
     try {
       const query =
-        'INSERT INTO "order" (subtotal, address, total, quantity, purchase_date, description, client_id) VALUES ($1, $2 ,$3 ,$4 ,$5 ,$6, $7) RETURNING "idOrder"';
+        'INSERT INTO "order" ("idOrder", subtotal, address, total, quantity, purchase_date, description, client_id) VALUES ((SELECT COALESCE(MAX("idOrder"), 0) + 1 FROM "order"), $1, $2 ,$3 ,$4 ,$5 ,$6, $7) RETURNING "idOrder"';
       const orderResult = await client.query(query, [
         subtotal,
         address,
@@ -21,7 +21,8 @@ class OrderService {
 
       const idOrder = orderResult.rows[0].idOrder;
       console.log(idOrder);
-      const query2 = 'INSERT INTO order_product (order_id, product_id) VALUES ($1, $2)';
+      const query2 =
+        'INSERT INTO order_product ("idOrder_product", order_id, product_id) VALUES ((SELECT COALESCE(MAX("idOrder_product"), 0) + 1 FROM order_product), $1, $2)';
       await client.query(query2, [idOrder, productId]);
       return { message: 'Orden creada con éxito' };
     } catch (error) {

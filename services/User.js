@@ -57,7 +57,8 @@ class UserService {
         throw new Error(`El email ${email} ya está registrado`);
       }
       const hashedPassword = await bcrypt.hash(password, 10);
-      const query = 'INSERT INTO client (fullname, dni, email, password, phone) VALUES ($1, $2, $3, $4, $5)';
+      const query =
+        'INSERT INTO client ("idClient", fullname, dni, email, password, phone, role) VALUES ((SELECT COALESCE(MAX("idClient"), 0) + 1 FROM client), $1, $2, $3, $4, $5, 0)';
       await client.query(query, [fullname, dni, email, hashedPassword, phone]);
 
       const newUser = {
@@ -69,6 +70,16 @@ class UserService {
       };
 
       return newUser;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getLatestId() {
+    try {
+      const query = 'SELECT "idClient" FROM client ORDER BY "idClient" DESC LIMIT 1';
+      const result = await client.query(query);
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
