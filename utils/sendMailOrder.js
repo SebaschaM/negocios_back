@@ -27,11 +27,30 @@ export const sendEmailOrder = async ({
     to: email,
     subject: "Orden generada",
     text: `Se genero la siguiente orden:`,
-    html: `<p>${fullname}  Se genero la siguiente orden:</p>
-    <p>Producto: ${productname}</p>
-    <p>Cantidad: ${quantity}</p>
-    <p>Total: S/ ${price}</p>
-    <p>Fecha compra: ${purchasedate}</p>
+    html: `  <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px;">
+    <h2 style="color: #333;">¡Orden generada!</h2>
+    <p>${fullname}, se ha generado la siguiente orden:</p>
+    <table style="width: 100%; border-collapse: collapse;">
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #ccc;">Producto:</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ccc;">${productname}</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #ccc;">Cantidad:</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ccc;">${quantity}</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #ccc;">Total:</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ccc;">S/ ${price}</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px;">Fecha compra:</td>
+        <td style="padding: 10px;">${purchasedate}</td>
+      </tr>
+    </table>
+    <p style="margin-top: 20px;">¡Gracias por tu compra!</p>
+    <img src="https://res.cloudinary.com/sebas-2001-yac/image/upload/v1688501234/logo_yzltss.png" alt="Logo de la empresa" style="max-width: 200px;">
+  </div>
         `,
   });
 
