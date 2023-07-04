@@ -5,6 +5,16 @@ class DashboardController {
     this.dashboardService = new DashboardService();
   }
 
+  totalVentas = async (req, res) => {
+    const resp = await this.dashboardService.totalVentas();
+    return res.json(resp);
+  };
+
+  cantidadTotalProductosVendidos = async (req, res) => {
+    const resp = await this.dashboardService.cantidadTotalProductosVendidos();
+    return res.json(resp);
+  };
+
   cantidadIngresoGeneradoPorCategoria = async (req, res) => {
     const resp = await this.dashboardService.cantidadIngresoGeneradoPorCategoria();
     return res.json(resp);

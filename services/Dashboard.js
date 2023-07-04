@@ -3,6 +3,26 @@ import client from '../config/connectionDB.js';
 class DashboardService {
   constructor() {}
 
+  async totalVentas() {
+    try {
+      const query = 'SELECT SUM(ord.total) as Total from "order" ord;';
+      const response = await client.query(query);
+      return response.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async cantidadTotalProductosVendidos() {
+    try {
+      const query = 'SELECT SUM(ord.quantity) as Cantidad from "order" ord;';
+      const response = await client.query(query);
+      return response.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async cantidadIngresoGeneradoPorCategoria() {
     try {
       const query =
