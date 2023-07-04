@@ -1,0 +1,51 @@
+import client from '../config/connectionDB.js';
+
+class DashboardService {
+  constructor() {}
+
+  async cantidadIngresoGeneradoPorCategoria() {
+    try {
+      const query =
+        'SELECT ct.name AS categoria, SUM(o.quantity * o.subtotal) AS ingresos FROM category ct JOIN product pro ON ct."idCategory" = pro.category_id JOIN order_product ord ON ord.product_id = pro."idProduct" JOIN "order" o ON o."idOrder" = ord.order_id GROUP BY ct.name';
+      const responses = await client.query(query);
+      return responses.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async unidadesVendidasPorCategoria() {
+    try {
+      const query =
+        'SELECT pr.name AS marca, SUM(o.quantity) AS cantidad_vendida FROM provider pr JOIN product pro ON pr."idProvider" = pro.provider_id JOIN order_product ord ON ord.product_id = pro."idProduct" JOIN "order" o ON o."idOrder" = ord.order_id GROUP BY pr.name';
+      const responses = await client.query(query);
+      return responses.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async cantidadIngresoGeneradoPorProveedor() {
+    try {
+      const query =
+        'SELECT pr.name AS marca, SUM(o.quantity * o.subtotal) AS ingresos FROM provider pr JOIN product pro ON pr."idProvider" = pro.provider_id JOIN order_product ord ON ord.product_id = pro."idProduct" JOIN "order" o ON o."idOrder" = ord.order_id GROUP BY pr.name';
+      const response = await client.query(query);
+      return response.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async comprasAnualesPorCliente() {
+    try {
+      const query =
+        'SELECT cl.fullname, SUM(o.quantity * o.subtotal) AS ingresos FROM client cl JOIN "order" o ON o.client_id = cl."idClient" JOIN order_product ord ON ord.order_id = o."idOrder" GROUP BY cl.fullname';
+      const response = await client.query(query);
+      return response.rows;
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+export default DashboardService;

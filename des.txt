@@ -1,12 +1,30 @@
-= Authenticacion (Login, Registro) listo
+/* CANTIDAD DE INGRESO GENERADO POR CATEGORIA */
+SELECT ct.name AS categoria, SUM(o.quantity * o.subtotal) AS ingresos
+FROM category ct
+JOIN product pro ON ct."idCategory" = pro.category_id
+JOIN order_product ord ON ord.product_id = pro."idProduct"
+JOIN "order" o ON o."idOrder" = ord.order_id
+GROUP BY ct.name;
 
-= Producto (Listar productos, obtener producto por id, listar categorias, listar producto por categoria) Listo
+/* UNIDADES VENDIDAS POR CADA CATEGORIA DE PRODUCTO */
+SELECT pr.name AS marca, SUM(o.quantity) AS cantidad_vendida
+FROM provider pr
+JOIN product pro ON pr."idProvider" = pro.provider_id
+JOIN order_product ord ON ord.product_id = pro."idProduct"
+JOIN "order" o ON o."idOrder" = ord.order_id
+GROUP BY pr.name;
 
-=== FALTA ===
-= Pedido
-Insertar orden (Insertar order luego order_product) Listo
-Listar ordenes Listo
-Obtener orden por id Listo
+/* CANTIDAD DE INGRESO GENERADO POR MARCA/PROVEEDOR */
+SELECT pr.name AS marca, SUM(o.quantity * o.subtotal) AS ingresos
+FROM provider pr
+JOIN product pro ON pr."idProvider" = pro.provider_id
+JOIN order_product ord ON ord.product_id = pro."idProduct"
+JOIN "order" o ON o."idOrder" = ord.order_id
+GROUP BY pr.name;
 
-- Perfil, obtener datos del perfil Listo
-
+/* COMPRAS ANUALES REALIZADAS POR CLIENTE */
+SELECT cl.fullname, SUM(o.quantity * o.subtotal) AS ingresos
+FROM client cl
+JOIN "order" o ON o.client_id = cl."idClient"
+JOIN order_product ord ON ord.order_id = o."idOrder"
+GROUP BY cl.fullname;
