@@ -37,7 +37,6 @@ class UserService {
   async updateProfile(id, body) {
     try {
       const { password } = body;
-      console.log(body);
       if (password) {
         body.password = await bcrypt.hash(password, 10);
       }
@@ -50,7 +49,7 @@ class UserService {
     }
   }
 
-  async register(fullname, email, password, phone) {
+  async register(fullname, dni, email, password, phone) {
     try {
       const existingUser = await this.findEmail(email);
 
@@ -58,11 +57,12 @@ class UserService {
         throw new Error(`El email ${email} ya está registrado`);
       }
       const hashedPassword = await bcrypt.hash(password, 10);
-      const query = 'INSERT INTO client (fullname, email, password, phone) VALUES ($1, $2, $3, $4)';
-      await client.query(query, [fullname, email, hashedPassword, phone]);
+      const query = 'INSERT INTO client (fullname, dni, email, password, phone) VALUES ($1, $2, $3, $4, $5)';
+      await client.query(query, [fullname, dni, email, hashedPassword, phone]);
 
       const newUser = {
         fullname: fullname,
+        dni: dni,
         email: email,
         password: hashedPassword,
         phone: phone,
