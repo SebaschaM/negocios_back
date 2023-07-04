@@ -75,16 +75,6 @@ class UserService {
     }
   }
 
-  async getLatestId() {
-    try {
-      const query = 'SELECT "idClient" FROM client ORDER BY "idClient" DESC LIMIT 1';
-      const result = await client.query(query);
-      return result.rows[0];
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async getProfile(idClient) {
     try {
       const query = 'SELECT * FROM client WHERE "idClient" = $1';
