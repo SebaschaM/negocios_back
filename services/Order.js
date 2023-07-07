@@ -5,12 +5,13 @@ class OrderService {
   constructor() {}
 
   async createOrder(order, productId) {
-    const { subtotal, address, total, quantity, purchase_date, description, client_id, email,fullname, productname  } = order;
-
+    const { serial, subtotal, address, total, quantity, purchase_date, description, client_id, email,fullname, productname  } = order;
+    console.log(order, productId)
     try {
       const query =
-        'INSERT INTO "order" ("idOrder", subtotal, address, total, quantity, purchase_date, description, client_id) VALUES ((SELECT COALESCE(MAX("idOrder"), 0) + 1 FROM "order"), $1, $2 ,$3 ,$4 ,$5 ,$6, $7) RETURNING "idOrder"';
+        'INSERT INTO "order" (serial, subtotal, address, total, quantity, purchase_date, description, client_id) VALUES ($1, $2, $3 ,$4 ,$5 ,$6 ,$7, $8) RETURNING "idOrder"';
       const orderResult = await client.query(query, [
+        serial,
         subtotal,
         address,
         total,
@@ -33,6 +34,7 @@ class OrderService {
   }
 
   async findAllOrdersByUser(idUser) {
+    console.log(idUser)
     try {
       const query =
         'SELECT o.*, pr.* FROM order_product AS op INNER JOIN "order" AS o ON o."idOrder" = op.order_id INNER JOIN product AS pr ON  pr."idProduct" = op.product_id WHERE o.client_id = $1';

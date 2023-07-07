@@ -1,4 +1,6 @@
 import { createTransport } from "nodemailer";
+import { parse, format } from 'date-fns';
+
 
 export const sendEmailOrder = async ({
   email,
@@ -8,7 +10,12 @@ export const sendEmailOrder = async ({
   price,
   purchasedate,
 }) => {
-    console.log(email, fullname, productname, quantity, price, purchasedate)
+  console.log(typeof purchasedate)
+  console.log(purchasedate)
+  const parsedDate = parse(purchasedate, 'EEE MMM dd yyyy', new Date());
+  const parseDateFormat = format(parsedDate, 'dd/MM/yyyy');
+  console.log(parseDateFormat)
+
   const transporter = createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -45,7 +52,7 @@ export const sendEmailOrder = async ({
       </tr>
       <tr>
         <td style="padding: 10px;">Fecha compra:</td>
-        <td style="padding: 10px;">${purchasedate}</td>
+        <td style="padding: 10px;">${parseDateFormat}</td>
       </tr>
     </table>
     <p style="margin-top: 20px;">¡Gracias por tu compra!</p>

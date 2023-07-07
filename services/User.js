@@ -20,7 +20,7 @@ class UserService {
 
   async findEmail(email) {
     try {
-      const query = 'SELECT * FROM client WHERE email = $1';
+      const query = 'SELECT * FROM "user" WHERE email = $1';
       const user = await client.query(query, [email]);
 
       if (user.rows.length === 0) {
@@ -40,7 +40,7 @@ class UserService {
       if (password) {
         body.password = await bcrypt.hash(password, 10);
       }
-      const query = 'UPDATE client SET fullname=$1, email=$2, password=$3, phone=$4 WHERE "idClient"=$5';
+      const query = 'UPDATE "user" SET fullname=$1, email=$2, password=$3, phone=$4 WHERE "idUser"=$5';
       const values = [body.fullname, body.email, body.password, body.phone, id];
       const result = await client.query(query, values);
       return result;
@@ -52,15 +52,13 @@ class UserService {
   async register(fullname, dni, email, password, phone) {
     try {
       const existingUser = await this.findEmail(email);
-
       if (existingUser) {
         throw new Error(`El email ${email} ya está registrado`);
       }
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const query =
-        'INSERT INTO client ("idClient", fullname, dni, email, password, phone, role) VALUES ((SELECT COALESCE(MAX("idClient"), 0) + 1 FROM client), $1, $2, $3, $4, $5, 0)';
-      await client.query(query, [fullname, dni, email, hashedPassword, phone]);
 
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const query = 'INSERT INTO "user" (fullname, dni_ruc, email, password, phone, address, role) VALUES ($1, $2, $3, $4, $5, \'\', 0)';
+      await client.query(query, [fullname, dni, email, hashedPassword, phone]);
       const newUser = {
         fullname: fullname,
         dni: dni,
@@ -71,13 +69,13 @@ class UserService {
 
       return newUser;
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   }
 
   async getProfile(idClient) {
     try {
-      const query = 'SELECT * FROM client WHERE "idClient" = $1';
+      const query = 'SELECT * FROM "user WHERE "idUser" = $1';
       const result = await client.query(query, [idClient]);
       return result.rows[0];
     } catch (error) {

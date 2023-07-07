@@ -6,9 +6,8 @@ class ProductService {
   async getProducts() {
     try {
       const query =
-        'SELECT product.*, category.name AS category_name, provider.name AS provider_name FROM product ' +
-        'INNER JOIN category on product.category_id = "idCategory" ' +
-        'INNER JOIN provider on product.provider_id = "idProvider"';
+        'SELECT product.*, category.name AS category_name FROM product ' +
+        'INNER JOIN category on product.category_id = "idCategory" '
       const products = await client.query(query);
       return products.rows;
     } catch (error) {
@@ -20,9 +19,8 @@ class ProductService {
   async getProductById(idProduct) {
     try {
       const query =
-        'SELECT product.*, category.name AS "category_name", provider.name AS "provider_name" FROM product ' +
-        'INNER JOIN category on product.category_id = "idCategory" ' +
-        'INNER JOIN provider on product.provider_id = "idProvider" WHERE "idProduct" = $1';
+        'SELECT product.*, category.name AS "category_name" FROM product ' +
+        'INNER JOIN category on product.category_id = "idCategory WHERE "idProduct" = $1';
       const product = await client.query(query, [idProduct]);
       return product.rows;
     } catch (error) {
