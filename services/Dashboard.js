@@ -59,7 +59,7 @@ class DashboardService {
   async comprasAnualesPorCliente() {
     try {
       const query =
-        'SELECT cl.fullname, SUM(o.total) AS ingresos FROM "user" cl JOIN "order" o ON o.client_id = cl."idUser" GROUP BY cl.fullname ORDER BY ingresos DESC LIMIT 5';
+        'SELECT cl.fullname, SUM(o.total) AS ingresos FROM "user" cl JOIN "order" o ON o.user_id = cl."idUser" GROUP BY cl.fullname ORDER BY ingresos DESC LIMIT 5';
       const response = await client.query(query);
       return response.rows;
     } catch (error) { 

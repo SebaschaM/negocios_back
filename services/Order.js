@@ -5,11 +5,11 @@ class OrderService {
   constructor() {}
 
   async createOrder(order, productId) {
-    const { serial, subtotal, address, total, quantity, purchase_date, description, client_id, email,fullname, productname  } = order;
+    const { serial, subtotal, address, total, quantity, purchase_date, description, user_id, email,fullname, productname  } = order;
     console.log(order, productId)
     try {
       const query =
-        'INSERT INTO "order" (serial, subtotal, address, total, quantity, purchase_date, description, client_id) VALUES ($1, $2, $3 ,$4 ,$5 ,$6 ,$7, $8) RETURNING "idOrder"';
+        'INSERT INTO "order" (serial, subtotal, address, total, quantity, purchase_date, description, user_id) VALUES ($1, $2, $3 ,$4 ,$5 ,$6 ,$7, $8) RETURNING "idOrder"';
       const orderResult = await client.query(query, [
         serial,
         subtotal,
@@ -18,7 +18,7 @@ class OrderService {
         quantity,
         purchase_date,
         description,
-        client_id,
+        user_id,
       ]);
 
       const idOrder = orderResult.rows[0].idOrder;
@@ -37,7 +37,7 @@ class OrderService {
     console.log(idUser)
     try {
       const query =
-        'SELECT o.*, pr.* FROM order_product AS op INNER JOIN "order" AS o ON o."idOrder" = op.order_id INNER JOIN product AS pr ON  pr."idProduct" = op.product_id WHERE o.client_id = $1';
+        'SELECT o.*, pr.* FROM order_product AS op INNER JOIN "order" AS o ON o."idOrder" = op.order_id INNER JOIN product AS pr ON  pr."idProduct" = op.product_id WHERE o.user_id = $1';
       const myOrders = await client.query(query, [idUser]);
       return myOrders.rows;
     } catch (error) {
