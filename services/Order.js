@@ -5,11 +5,23 @@ class OrderService {
   constructor() {}
 
   async createOrder(order, productId) {
-    const { serial, subtotal, address, total, quantity, purchase_date, description, user_id, email,fullname, productname  } = order;
-    console.log(order, productId)
+    const {
+      serial,
+      subtotal,
+      address,
+      total,
+      quantity,
+      purchase_date,
+      description,
+      user_id,
+      email,
+      fullname,
+      productname,
+    } = order;
+    console.log(order, productId);
     try {
       const query =
-        'INSERT INTO "order" (serial, subtotal, address, total, quantity, purchase_date, description, user_id) VALUES ($1, $2, $3 ,$4 ,$5 ,$6 ,$7, $8) RETURNING "idOrder"';
+        'INSERT INTO "order" ("idOrder", serial, subtotal, address, total, quantity, purchase_date, description, user_id) VALUES ((SELECT COALESCE(MAX("idOrder"), 0) + 1 FROM "order"),$1, $2, $3 ,$4 ,$5 ,$6 ,$7, $8) RETURNING "idOrder"';
       const orderResult = await client.query(query, [
         serial,
         subtotal,
@@ -22,9 +34,16 @@ class OrderService {
       ]);
 
       const idOrder = orderResult.rows[0].idOrder;
-      await sendEmailOrder({email:email, fullname:fullname, productname:productname, quantity: quantity, price: total, purchasedate: purchase_date});
+      await sendEmailOrder({
+        email: email,
+        fullname: fullname,
+        productname: productname,
+        quantity: quantity,
+        price: total,
+        purchasedate: purchase_date,
+      });
       const query2 =
-        'INSERT INTO order_product ("idOrder_product", order_id, product_id) VALUES ((SELECT COALESCE(MAX("idOrder_product"), 0) + 1 FROM order_product), $1, $2)';
+        'INSERT INTO "order_product" ("idOrder_product", order_id, product_id) VALUES ((SELECT COALESCE(MAX("idOrder_product"), 0) + 1 FROM "order_product"), $1, $2)';
       await client.query(query2, [idOrder, productId]);
       return { message: 'Orden creada con éxito' };
     } catch (error) {
@@ -34,7 +53,7 @@ class OrderService {
   }
 
   async findAllOrdersByUser(idUser) {
-    console.log(idUser)
+    console.log(idUser);
     try {
       const query =
         'SELECT o.*, pr.* FROM order_product AS op INNER JOIN "order" AS o ON o."idOrder" = op.order_id INNER JOIN product AS pr ON  pr."idProduct" = op.product_id WHERE o.user_id = $1';
