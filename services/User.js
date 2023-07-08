@@ -57,7 +57,7 @@ class UserService {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const query = 'INSERT INTO "user" (fullname, dni_ruc, email, password, phone, address, role) VALUES ($1, $2, $3, $4, $5, \'\', 0)';
+      const query = 'INSERT INTO "user" ("idUser", fullname, dni_ruc, email, password, phone, address, role) VALUES ((SELECT COALESCE(MAX("idUser"), 0) + 1 FROM "user"), $1, $2, $3, $4, $5, \'\', 0)';
       await client.query(query, [fullname, dni, email, hashedPassword, phone]);
       const newUser = {
         fullname: fullname,
