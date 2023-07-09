@@ -34,6 +34,11 @@ class DashboardController {
     const resp = await this.dashboardService.comprasAnualesPorCliente();
     return res.json(resp);
   };
+
+  generateExcel = async (req, res) => {
+    const resp = await this.dashboardService.generateExcel();
+    return res.json(resp);
+  }
 }
 
 export default DashboardController;

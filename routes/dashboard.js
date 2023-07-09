@@ -10,5 +10,6 @@ routerDashboard.get('/grap1', [], dashboardController.cantidadIngresoGeneradoPor
 routerDashboard.get('/grap2', [], dashboardController.unidadesVendidasPorCategoria);
 routerDashboard.get('/grap3', [], dashboardController.cantidadIngresoGeneradoPorProveedor);
 routerDashboard.get('/grap4', [], dashboardController.comprasAnualesPorCliente);
+routerDashboard.get('/generateExcel', [], dashboardController.generateExcel);
 
 export default routerDashboard;
